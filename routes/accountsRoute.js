@@ -34,6 +34,26 @@ router.get('/:id', (req, res) => {
 
 // POST
 // add new account
+router.post('/', (req, res) => {
+	const accInfo = req.body;
+
+	// if req.body.name is not included or if req.body.name is an empty string, throw an error
+	if(!accInfo.name || accInfo.name.length < 1) {
+		return res.status(400).json({message: 'New account info must include name'});
+	}
+
+	if(!accInfo.budget) {
+		return res.status(400).json({message: 'New account info must include budget'});
+	}
+
+	db('accounts').insert(accInfo)
+		.then(success => {
+			res.status(201).json({message: 'New account created successfully'});
+		})
+		.catch(error => {
+			res.status(500).json({message: 'There was a problem adding new account to the server'});
+		});
+});
 
 // DELETE
 // delete specific account by id
