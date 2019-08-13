@@ -76,5 +76,33 @@ router.delete('/:id', (req, res) => {
 
 // PUT
 // update specific account by id
+router.put('/:id', (req, res) => {
+	const changes = req.body;
+
+	if(Object.keys(changes).length === 0) {
+		return res.status(400).json({message: 'Please include name and/or budget info'});
+	}
+
+	if(!changes.name) {
+		return res.status(400).json({message: 'Please include name info'});
+	}
+
+	db('accounts')
+		.where('id', req.params.id).first()
+		.update({
+			name: changes.name,
+			budget: changes.budget
+		})
+		.then(updated => {
+			if(updated) {
+				res.status(201).json({message: 'Account updated successfully'});
+			} else {
+				res.status(404).json({message: 'That account ID does not exist'});
+			}
+		})
+		.catch(error => {
+			res.status(500).json({message: 'There was a problem updating specified account'});
+		});
+});
 
 module.exports = router;
