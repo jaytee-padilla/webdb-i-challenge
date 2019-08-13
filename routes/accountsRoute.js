@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 			res.status(200).json(accounts);
 		})
 		.catch(error => {
-			res.status(500).json({message: 'Error getting posts from database'});
+			res.status(500).json({message: 'Error accessing accounts in database'});
 		});
 });
 
@@ -28,7 +28,7 @@ router.get('/:id', (req, res) => {
 			}
 		})
 		.catch(error => {
-			res.status(500).json({message: 'Error getting posts from database'});
+			res.status(500).json({message: 'Error accessing accounts in database'});
 		});
 });
 
@@ -57,6 +57,22 @@ router.post('/', (req, res) => {
 
 // DELETE
 // delete specific account by id
+router.delete('/:id', (req, res) => {
+
+	db('accounts')
+		.where('id', req.params.id).first()
+		.del()
+		.then(account => {
+			if(account) {
+				res.status(200).json({message: 'Account deleted successfully'});
+			} else{
+				res.status(404).json({message: 'That account ID does not exist'});
+			}
+		})
+		.catch(error => {
+			res.status(500).json({message: 'Error accessing accounts in database'});
+		});
+});
 
 // PUT
 // update specific account by id
